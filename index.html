@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>fmsg.io</title>
+  <style>
+    body {
+      background-color: #00A86B;
+      font-size: 2em;
+    }
+    form {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+    input,
+    button,
+    label {
+      font-size: 2em;
+      border-radius: 10px;
+    }
+    label {
+      color: rgb(196, 195, 195);
+    }
+  </style>
+</head>
+<body>
+  <form>
+    <label for="usr">@</label>
+    <input type="text" id="usr" name="usr" maxlength="200" minlength="2" required>
+    <label for="usr">@fmsg.io</label>
+    <div id="usr-error">
+      Cannot start or end with "_"
+    </div>
+    <br><br>
+    <label for="passwd"></label>
+    <input type="password" id="passwd" name="passwd" minlength="4" maxlength="200" required>
+    <div id="passwd-error">
+      6 characters or more
+    </div>
+    <br><br>
+    <input type="submit" value="Go">
+  </form>
+  
+  <script>
+    const usr = document.getElementById('usr');
+    const passwd = document.getElementById('passwd');
+    const usrError = document.getElementById('usr-error');
+    const passwdError = document.getElementById('passwd-error');
+
+    function hasConsecutiveChar(str, char) {
+      let i = str.indexOf(char);
+      while (i > 0 && i < str.length-1) {
+        if (str[i + 1] === char) {
+          return true;
+        }
+        i = str.indexOf(char, i+1);
+      }
+      return false;
+    }
+  
+    usr.addEventListener('input', () => {
+      let usrText = usr.value;
+      if (!/^[\w-]*$/.test(usrText)) {
+        usrError.textContent = 'Only letters, numbers, "_" or "-" are allowed';
+        return;
+      } 
+      if (usrText.startsWith('_') || usrText.endsWith('_')
+       || usrText.startsWith('-') || usrText.endsWith('-')) {
+        usrError.textContent = 'Cannot start or end with "-" or "_"';
+        return;
+      }
+      if (hasConsecutiveChar(usrText, '-')) {
+        usrError.textContent = 'Cannot have "-" consecutively';
+        return;
+      }
+      if (hasConsecutiveChar(usrText, '_')) {
+        usrError.textContent = 'Cannot have "_" consecutively';
+        return;
+      }
+      if (usrText.length > 200) {
+        usrError.textContent = 'Too long';
+        return;
+      }
+
+      usrError.textContent = ' ';
+    });
+  
+    passwd.addEventListener('input', () => {
+      if (!passwd.checkValidity()) {
+        passwdError.textContent = 'Please enter a valid passwd';
+      } else {
+        passwdError.textContent = ' ';
+      }
+    });
+  </script>
+</body>
+</html>
